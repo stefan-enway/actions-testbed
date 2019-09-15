@@ -1,4 +1,4 @@
-on: issue_comment
+on: pull_request
 name: sent message to rocketchat
 jobs:
   chat:
