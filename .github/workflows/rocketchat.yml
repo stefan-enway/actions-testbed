@@ -1,0 +1,27 @@
+on: issue_comment
+name: sent message to rocketchat
+jobs:
+  chat:
+    name: chat
+    runs-on: ubuntu-latest
+    steps:
+    - name: get the comment
+      uses: stefan-enway/github-event-jq@master
+      with: 
+        filter: ".comment.body"
+      id: comment   
+    - name: get the url
+      uses: stefan-enway/github-event-jq@master
+      with: 
+        filter: ".comment.html_url"
+      id: url   
+    - name: get the title
+      uses: stefan-enway/github-event-jq@master
+      with: 
+        filter: ".issue.title"
+      id: title   
+    - name: webhook rocketchat
+      uses: stefan-enway/webhook-rocketchat@master
+      env:
+        WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+        MESSAGE: "${{ steps.comment.outputs.result }}, \"attachments\": [ { \"title\": ${{ steps.title.outputs.result }}, \"title_link\": ${{ steps.url.outputs.result }}, \"text\": \"text\", \"image_url\": \"\", \"color\": \"#764FA5\" } ] "
